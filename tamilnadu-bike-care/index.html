@@ -1,13 +1,1394 @@
-<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bike Care TN</title><link rel="stylesheet" href="style.css"></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BikeCare TN | Bike Service Reminder</title>
+
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#0b1017;
+    color:#f5f7fa;
+}
+
+body.light{
+    background:#f4f6f8;
+    color:#18202a;
+}
+
+header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    height:70px;
+    padding:0 5%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:rgba(15,22,31,.96);
+    border-bottom:1px solid #293548;
+}
+
+.light header{
+    background:rgba(255,255,255,.96);
+    border-color:#d9e0e7;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:21px;
+    font-weight:800;
+}
+
+.logo-icon{font-size:27px}
+.logo-blue{color:#4da3ff}
+
+.header-actions{
+    display:flex;
+    gap:8px;
+}
+
+.header-btn{
+    padding:9px 13px;
+    border-radius:9px;
+    border:1px solid #35445a;
+    background:#17212d;
+    color:white;
+    cursor:pointer;
+}
+
+.light .header-btn{
+    background:white;
+    color:#18202a;
+    border-color:#d1d9e2;
+}
+
+.hero{
+    max-width:1200px;
+    margin:30px auto 20px;
+    padding:42px;
+    border:1px solid #29384b;
+    border-radius:22px;
+    background:
+        radial-gradient(circle at top right,rgba(58,145,255,.13),transparent 40%),
+        linear-gradient(135deg,#121d2b,#0d141d);
+}
+
+.light .hero{
+    background:white;
+    border-color:#d8e0e8;
+}
+
+.eyebrow{
+    color:#58aaff;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:1.6px;
+}
+
+.hero h1{
+    margin:8px 0 15px;
+    max-width:850px;
+    font-size:clamp(32px,6vw,56px);
+    line-height:1.08;
+}
+
+.hero p{
+    max-width:850px;
+    color:#aab7c6;
+    line-height:1.7;
+    font-size:15px;
+}
+
+.light .hero p{color:#526174}
+
+.search-area{
+    max-width:1200px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr;
+    gap:10px;
+}
+
+.search-input,
+.search-select{
+    width:100%;
+    padding:14px;
+    border-radius:11px;
+    border:1px solid #34445a;
+    background:#111923;
+    color:white;
+    font-size:14px;
+    outline:none;
+}
+
+.search-input:focus,
+.search-select:focus{
+    border-color:#4da3ff;
+}
+
+.light .search-input,
+.light .search-select{
+    background:white;
+    color:#18202a;
+    border-color:#d0d9e3;
+}
+
+.results-count{
+    max-width:1200px;
+    margin:15px auto 8px;
+    color:#8996a7;
+    font-size:13px;
+}
+
+.bike-grid{
+    max-width:1200px;
+    margin:auto;
+    padding:8px 0 70px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(225px,1fr));
+    gap:15px;
+}
+
+.bike-card{
+    padding:12px;
+    border:1px solid #29384b;
+    border-radius:17px;
+    background:#121b26;
+    cursor:pointer;
+    transition:transform .18s,border-color .18s;
+}
+
+.bike-card:hover{
+    transform:translateY(-4px);
+    border-color:#4da3ff;
+}
+
+.light .bike-card{
+    background:white;
+    border-color:#d6dfe8;
+}
+
+.bike-visual{
+    height:135px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:13px;
+    background:radial-gradient(circle,#24364c,#080d13);
+    font-size:70px;
+}
+
+.light .bike-visual{
+    background:#edf2f7;
+}
+
+.bike-brand{
+    display:inline-block;
+    margin-top:10px;
+    padding:5px 9px;
+    border-radius:20px;
+    background:#19304a;
+    color:#75bbff;
+    font-size:10px;
+    font-weight:700;
+}
+
+.bike-card h3{
+    margin:8px 0 4px;
+    font-size:17px;
+}
+
+.bike-card p{
+    margin:0;
+    color:#8795a7;
+    font-size:12px;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:2000;
+    overflow-y:auto;
+    padding:15px;
+    background:rgba(0,0,0,.86);
+}
+
+.modal.hidden{display:none}
+
+.modal-box{
+    position:relative;
+    max-width:1100px;
+    margin:20px auto;
+    padding:25px;
+    border-radius:21px;
+    background:#101923;
+    border:1px solid #34445a;
+    box-shadow:0 20px 70px rgba(0,0,0,.5);
+}
+
+.light .modal-box{
+    background:white;
+    color:#18202a;
+    border-color:#d4dde7;
+}
+
+.close-btn{
+    position:absolute;
+    top:10px;
+    right:15px;
+    width:40px;
+    height:40px;
+    border:0;
+    border-radius:50%;
+    background:#202c3b;
+    color:white;
+    font-size:26px;
+    cursor:pointer;
+}
+
+.light .close-btn{
+    background:#edf1f5;
+    color:#18202a;
+}
+
+.detail-title{
+    padding-right:50px;
+}
+
+.detail-title h2{
+    margin:0 0 6px;
+    font-size:29px;
+}
+
+.detail-subtitle{
+    color:#8f9bab;
+    font-size:13px;
+}
+
+.bike-map{
+    position:relative;
+    min-height:310px;
+    margin-top:20px;
+    border-radius:17px;
+    background:radial-gradient(circle at center,#182738,#080d13);
+    overflow:hidden;
+}
+
+.light .bike-map{
+    background:#eef3f7;
+}
+
+.motorcycle{
+    position:absolute;
+    left:50%;
+    top:53%;
+    transform:translate(-50%,-50%);
+    width:70%;
+    min-width:420px;
+    height:130px;
+}
+
+.wheel{
+    position:absolute;
+    bottom:0;
+    width:95px;
+    height:95px;
+    border:8px solid #8996a5;
+    border-radius:50%;
+    background:#10161d;
+}
+
+.wheel.front{right:5%}
+.wheel.rear{left:5%}
+
+.frame{
+    position:absolute;
+    left:22%;
+    top:35%;
+    width:48%;
+    height:55%;
+    border-bottom:8px solid #aab5c0;
+    border-left:8px solid #aab5c0;
+    transform:skew(-18deg);
+}
+
+.engine-shape{
+    position:absolute;
+    left:38%;
+    top:40%;
+    width:100px;
+    height:65px;
+    border-radius:16px;
+    background:#303c4a;
+    border:3px solid #9aa7b5;
+}
+
+.handle{
+    position:absolute;
+    right:10%;
+    top:20%;
+    width:100px;
+    height:55px;
+    border-top:6px solid #9ba7b5;
+    transform:rotate(12deg);
+}
+
+.seat{
+    position:absolute;
+    left:25%;
+    top:23%;
+    width:130px;
+    height:27px;
+    border-radius:20px;
+    background:#202a36;
+}
+
+.map-title{
+    position:absolute;
+    left:20px;
+    top:15px;
+    color:#8fa0b2;
+    font-size:12px;
+}
+
+.marker{
+    position:absolute;
+    width:30px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid white;
+    border-radius:50%;
+    background:#2088e8;
+    color:white;
+    font-size:11px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 4px 15px rgba(0,0,0,.5);
+    transition:.15s;
+}
+
+.marker:hover{
+    transform:scale(1.15);
+    background:#55b0ff;
+}
+
+.parts-title{
+    margin:25px 0 12px;
+    font-size:21px;
+}
+
+.parts-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:13px;
+}
+
+.part-card{
+    padding:16px;
+    border-radius:15px;
+    background:#151f2b;
+    border:1px solid #2d3d52;
+    transition:.2s;
+}
+
+.light .part-card{
+    background:#f7f9fb;
+    border-color:#d8e0e8;
+}
+
+.part-card h3{
+    margin:0 0 8px;
+    font-size:16px;
+}
+
+.part-location{
+    margin-bottom:11px;
+    color:#55aaff;
+    font-size:12px;
+}
+
+.part-info{
+    margin:7px 0;
+    color:#bdc8d5;
+    font-size:13px;
+    line-height:1.5;
+}
+
+.light .part-info{
+    color:#526174;
+}
+
+.part-info strong{
+    color:white;
+}
+
+.light .part-info strong{
+    color:#18202a;
+}
+
+.warning{
+    margin-top:18px;
+    padding:14px;
+    border-radius:11px;
+    background:#292317;
+    color:#dfcd91;
+    font-size:12px;
+    line-height:1.6;
+}
+
+.empty{
+    grid-column:1/-1;
+    padding:50px;
+    text-align:center;
+    color:#8996a7;
+}
+
+@media(max-width:700px){
+
+    header{
+        padding:0 4%;
+    }
+
+    .hero{
+        margin:15px;
+        padding:27px;
+    }
+
+    .hero h1{
+        font-size:31px;
+    }
+
+    .search-area{
+        grid-template-columns:1fr;
+        margin:15px;
+    }
+
+    .results-count{
+        margin:15px;
+    }
+
+    .bike-grid{
+        margin:15px;
+    }
+
+    .modal{
+        padding:5px;
+    }
+
+    .modal-box{
+        margin:8px auto;
+        padding:16px;
+    }
+
+    .parts-grid{
+        grid-template-columns:1fr;
+    }
+
+    .bike-map{
+        min-height:240px;
+    }
+
+    .motorcycle{
+        transform:translate(-50%,-50%) scale(.72);
+    }
+
+    .header-btn{
+        padding:7px 9px;
+        font-size:11px;
+    }
+}
+</style>
+</head>
+
 <body>
-<header><div class="wrap nav"><div class="logo">🏍️ Bike Care <span>TN</span></div><div class="badge">50+ Bikes</div></div></header>
-<main class="wrap">
-<section class="hero"><div><p class="eyebrow">TAMIL NADU BIKE MAINTENANCE GUIDE</p><h1>Find your bike.<br><span>Know what to maintain.</span></h1><p class="sub">Search a motorcycle and see common maintenance items, service timing, cleaning intervals and replacement guidance in one place.</p></div></section>
-<div class="controls"><input id="search" placeholder="Search bike name, brand or engine…"><select id="brand"><option value="">All brands</option></select><select id="category"><option value="">All categories</option></select></div>
-<div id="count" class="count"></div><section id="grid" class="grid"></section>
-<div id="empty" class="empty" hidden>No bikes found. Try another search.</div>
-</main>
-<footer><div class="wrap"><b>Bike Care TN</b><p>Maintenance intervals are general guidance. Always follow the owner's manual and authorised service schedule for your exact model/year. Conditions such as dust, rain, traffic and riding style can shorten intervals.</p></div></footer>
-<script src="app.js"></script></body></html>
+
+<header>
+
+    <div class="logo">
+        <span class="logo-icon">🏍️</span>
+        <div>
+            Bike<span class="logo-blue">Care TN</span>
+        </div>
+    </div>
+
+    <div class="header-actions">
+
+        <button
+            class="header-btn"
+            onclick="toggleLanguage()">
+            தமிழ்
+        </button>
+
+        <button
+            class="header-btn"
+            onclick="toggleTheme()">
+            🌙
+        </button>
+
+    </div>
+
+</header>
+
+
+<section class="hero">
+
+    <div class="eyebrow">
+        BIKE SERVICE REMINDER
+    </div>
+
+    <h1 id="heroTitle">
+        Know your bike. Know every important part.
+    </h1>
+
+    <p id="heroText">
+
+        Select your bike to see important parts,
+        where they are located, what they do,
+        when to clean them, when to inspect them,
+        when they may need replacement and
+        their typical service life.
+
+        <br><br>
+
+        உங்கள் bike-ஐ select செய்து
+        ஒவ்வொரு important part பற்றியும்
+        தெரிந்து கொள்ளுங்கள்.
+
+    </p>
+
+</section>
+
+
+<div class="search-area">
+
+    <input
+        id="searchInput"
+        class="search-input"
+        type="text"
+        placeholder="🔍 Search bike or brand..."
+        oninput="renderBikes()"
+    >
+
+    <select
+        id="brandFilter"
+        class="search-select"
+        onchange="renderBikes()">
+
+        <option value="">
+            All Brands
+        </option>
+
+    </select>
+
+    <select
+        id="typeFilter"
+        class="search-select"
+        onchange="renderBikes()">
+
+        <option value="">
+            All Types
+        </option>
+
+    </select>
+
+</div>
+
+
+<div
+    id="resultCount"
+    class="results-count">
+</div>
+
+
+<div
+    id="bikeGrid"
+    class="bike-grid">
+</div>
+
+
+<div
+    id="bikeModal"
+    class="modal hidden"
+    onclick="closeModalOutside(event)">
+
+    <div class="modal-box">
+
+        <button
+            class="close-btn"
+            onclick="closeBike()">
+            ×
+        </button>
+
+        <div
+            id="detailTitle"
+            class="detail-title">
+        </div>
+
+
+        <div class="bike-map">
+
+            <div class="map-title">
+                Tap a numbered point to see the part
+            </div>
+
+            <div class="motorcycle">
+
+                <div class="wheel rear"></div>
+                <div class="wheel front"></div>
+                <div class="frame"></div>
+                <div class="seat"></div>
+                <div class="engine-shape"></div>
+                <div class="handle"></div>
+
+                <button class="marker"
+                    style="left:38%;top:48%"
+                    onclick="scrollToPart(1)">1</button>
+
+                <button class="marker"
+                    style="left:29%;top:30%"
+                    onclick="scrollToPart(2)">2</button>
+
+                <button class="marker"
+                    style="left:25%;top:45%"
+                    onclick="scrollToPart(3)">3</button>
+
+                <button class="marker"
+                    style="left:69%;top:24%"
+                    onclick="scrollToPart(4)">4</button>
+
+                <button class="marker"
+                    style="left:50%;top:64%"
+                    onclick="scrollToPart(5)">5</button>
+
+                <button class="marker"
+                    style="left:78%;top:48%"
+                    onclick="scrollToPart(6)">6</button>
+
+                <button class="marker"
+                    style="left:3%;top:56%"
+                    onclick="scrollToPart(7)">7</button>
+
+                <button class="marker"
+                    style="right:3%;top:56%"
+                    onclick="scrollToPart(8)">8</button>
+
+                <button class="marker"
+                    style="left:55%;top:64%"
+                    onclick="scrollToPart(9)">9</button>
+
+                <button class="marker"
+                    style="left:64%;top:35%"
+                    onclick="scrollToPart(10)">10</button>
+
+                <button class="marker"
+                    style="left:31%;top:68%"
+                    onclick="scrollToPart(11)">11</button>
+
+                <button class="marker"
+                    style="left:45%;top:28%"
+                    onclick="scrollToPart(12)">12</button>
+
+                <button class="marker"
+                    style="left:34%;top:22%"
+                    onclick="scrollToPart(13)">13</button>
+
+                <button class="marker"
+                    style="left:18%;top:37%"
+                    onclick="scrollToPart(14)">14</button>
+
+                <button class="marker"
+                    style="left:54%;top:24%"
+                    onclick="scrollToPart(15)">15</button>
+
+                <button class="marker"
+                    style="left:68%;top:37%"
+                    onclick="scrollToPart(16)">16</button>
+
+            </div>
+
+        </div>
+
+
+        <h2 class="parts-title">
+            🔧 Important Parts & Service Guide
+        </h2>
+
+
+        <div
+            id="partsGrid"
+            class="parts-grid">
+        </div>
+
+
+        <div class="warning">
+
+            ⚠️ <b>Important:</b>
+
+            These intervals are general maintenance
+            guidance, not a substitute for the
+            manufacturer's service schedule.
+
+            Exact replacement limits can vary by
+            model year, riding conditions, climate,
+            traffic and usage.
+
+            Always check the bike's owner's manual
+            or service booklet for exact intervals.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const bikes = [
+
+["Hero","Splendor Plus","Commuter","97.2 cc"],
+["Hero","HF Deluxe","Commuter","97.2 cc"],
+["Hero","Passion XTEC","Commuter","113.2 cc"],
+["Hero","Glamour","Commuter","124.7 cc"],
+["Hero","Super Splendor","Commuter","124.7 cc"],
+["Hero","Xtreme 125R","Street","124.7 cc"],
+["Hero","Xtreme 160R","Street","163 cc"],
+["Hero","Xtreme 160R 4V","Street","163 cc"],
+["Hero","Xtreme 250R","Street","249.6 cc"],
+["Hero","Xpulse 200 4V","Adventure","199.6 cc"],
+
+["Honda","Shine 100","Commuter","98.98 cc"],
+["Honda","Shine 125","Commuter","123.94 cc"],
+["Honda","SP125","Commuter","123.94 cc"],
+["Honda","SP160","Street","162.71 cc"],
+["Honda","Hornet 2.0","Street","184.4 cc"],
+["Honda","CB200X","Adventure","184.4 cc"],
+["Honda","Hness CB350","Cruiser","348.36 cc"],
+["Honda","CB350","Cruiser","348.36 cc"],
+["Honda","CB350RS","Cruiser","348.36 cc"],
+["Honda","NX500","Adventure","471 cc"],
+
+["TVS","Sport","Commuter","109.7 cc"],
+["TVS","Radeon","Commuter","109.7 cc"],
+["TVS","Star City Plus","Commuter","109.7 cc"],
+["TVS","Raider 125","Street","124.8 cc"],
+["TVS","Apache RTR 160 2V","Street","159.7 cc"],
+["TVS","Apache RTR 160 4V","Street","159.7 cc"],
+["TVS","Apache RTR 200 4V","Street","197.75 cc"],
+["TVS","Apache RR 310","Sport","312.2 cc"],
+["TVS","Ronin","Street","225.9 cc"],
+
+["Bajaj","Platina 100","Commuter","102 cc"],
+["Bajaj","Platina 110","Commuter","115.45 cc"],
+["Bajaj","CT 110X","Commuter","115.45 cc"],
+["Bajaj","Pulsar 125","Street","124.4 cc"],
+["Bajaj","Pulsar N150","Street","149.68 cc"],
+["Bajaj","Pulsar N160","Street","164.82 cc"],
+["Bajaj","Pulsar NS160","Street","160.3 cc"],
+["Bajaj","Pulsar NS200","Street","199.5 cc"],
+["Bajaj","Pulsar RS200","Sport","199.5 cc"],
+["Bajaj","Dominar 250","Touring","248.77 cc"],
+["Bajaj","Dominar 400","Touring","373.3 cc"],
+
+["Yamaha","FZ-FI","Street","149 cc"],
+["Yamaha","FZS-FI V4","Street","149 cc"],
+["Yamaha","MT-15 V2","Street","155 cc"],
+["Yamaha","R15 V4","Sport","155 cc"],
+["Yamaha","R15S","Sport","155 cc"],
+["Yamaha","FZ-X","Street","149 cc"],
+["Yamaha","R3","Sport","321 cc"],
+
+["Suzuki","Gixxer","Street","155 cc"],
+["Suzuki","Gixxer SF","Sport","155 cc"],
+["Suzuki","V-Strom SX","Adventure","249 cc"],
+["Suzuki","Hayabusa","Sport","1340 cc"],
+
+["Royal Enfield","Hunter 350","Cruiser","349 cc"],
+["Royal Enfield","Classic 350","Cruiser","349 cc"],
+["Royal Enfield","Bullet 350","Cruiser","349 cc"],
+["Royal Enfield","Meteor 350","Cruiser","349 cc"],
+["Royal Enfield","Himalayan 450","Adventure","452 cc"],
+["Royal Enfield","Guerrilla 450","Street","452 cc"],
+
+["KTM","Duke 200","Street","199.5 cc"],
+["KTM","Duke 250","Street","249 cc"],
+["KTM","Duke 390","Street","398.7 cc"],
+["KTM","RC 200","Sport","199.5 cc"],
+["KTM","Adventure 250","Adventure","249 cc"],
+["KTM","Adventure 390","Adventure","373 cc"]
+
+];
+
+
+const parts = [
+
+{
+name:"Engine Oil",
+location:"Engine crankcase / lower engine",
+purpose:"Lubricates and helps cool the engine's internal moving parts.",
+clean:"Check oil level every 500–1,000 km.",
+inspect:"Check during every service.",
+replace:"Replace according to the exact owner manual. Common planning range: 3,000–10,000 km.",
+life:"Typical service interval: ~3,000–10,000 km."
+},
+
+{
+name:"Oil Filter / Strainer",
+location:"Engine side or lower engine",
+purpose:"Removes contaminants from engine oil.",
+clean:"Check/clean during oil service where applicable.",
+inspect:"Inspect during every oil change.",
+replace:"Replace when specified by the manufacturer.",
+life:"Often around 5,000–10,000 km, depending on model."
+},
+
+{
+name:"Air Filter",
+location:"Inside the airbox, usually under the seat or tank area",
+purpose:"Prevents dust and dirt from entering the engine.",
+clean:"In dusty use, check/clean roughly every 2,000–5,000 km.",
+inspect:"Inspect at every service.",
+replace:"Replace when excessively dirty or damaged; many bikes use ~10,000–20,000 km planning intervals.",
+life:"Typical planning range: ~10,000–20,000 km."
+},
+
+{
+name:"Spark Plug",
+location:"Cylinder head / top of engine",
+purpose:"Creates the spark that ignites the air-fuel mixture.",
+clean:"Check/clean around 5,000–10,000 km where applicable.",
+inspect:"Inspect condition and gap during service.",
+replace:"Replace when worn, fouled or at the manufacturer's interval.",
+life:"Often around 10,000–20,000 km, depending on plug and bike."
+},
+
+{
+name:"Drive Chain",
+location:"Left side between engine and rear wheel",
+purpose:"Transfers engine power to the rear wheel.",
+clean:"Clean and lubricate around every 500–1,000 km and after rain/water exposure.",
+inspect:"Check slack, rust and wear around every 500–1,000 km.",
+replace:"Replace chain and sprockets when wear reaches the manufacturer's limit.",
+life:"Often ~15,000–30,000+ km, but riding conditions can change this greatly."
+},
+
+{
+name:"Front Brake Pads",
+location:"Inside the front-wheel brake caliper",
+purpose:"Creates friction to slow and stop the front wheel.",
+clean:"Clean brake area during routine service.",
+inspect:"Check pad thickness regularly, commonly every 2,000–5,000 km.",
+replace:"Replace when the pad reaches its wear limit.",
+life:"Very variable; roughly ~10,000–30,000 km is only a planning range."
+},
+
+{
+name:"Rear Brake Pads / Shoes",
+location:"Rear wheel brake assembly",
+purpose:"Provides rear-wheel braking.",
+clean:"Clean/check during service.",
+inspect:"Inspect every 2,000–5,000 km.",
+replace:"Replace when worn to the specified limit.",
+life:"Often ~15,000–40,000 km, depending heavily on use."
+},
+
+{
+name:"Brake Fluid",
+location:"Master-cylinder reservoir near the handlebar",
+purpose:"Transfers hydraulic pressure from the brake lever to the caliper.",
+clean:"Check fluid level monthly.",
+inspect:"Check level, colour and leaks during service.",
+replace:"Many systems use around a 2-year planning interval, but follow the manual.",
+life:"Often ~2 years."
+},
+
+{
+name:"Clutch Cable / Clutch System",
+location:"Left handlebar to clutch mechanism",
+purpose:"Controls clutch engagement and disengagement.",
+clean:"For cable systems, lubricate periodically, often around 1,000 km.",
+inspect:"Check clutch free play regularly.",
+replace:"Replace a cable if frayed, stiff or damaged; clutch components when worn.",
+life:"Highly variable; clutch wear depends strongly on riding."
+},
+
+{
+name:"Coolant",
+location:"Radiator and coolant reservoir on liquid-cooled bikes",
+purpose:"Carries heat away from the engine.",
+clean:"Check coolant level monthly and before long trips.",
+inspect:"Check leaks and hose condition during service.",
+replace:"Replace according to manufacturer specification; commonly around 2–3 years.",
+life:"Often ~20,000–40,000 km or ~2–3 years."
+},
+
+{
+name:"Battery",
+location:"Usually under the seat or behind a side cover",
+purpose:"Provides electrical power for starting and electrical systems.",
+clean:"Keep terminals clean; check every 3–6 months.",
+inspect:"Check terminals and battery condition during service.",
+replace:"Replace when capacity or starting performance drops significantly.",
+life:"Commonly ~2–4 years."
+},
+
+{
+name:"Tyres",
+location:"Front and rear wheels",
+purpose:"Provides grip, braking and stability.",
+clean:"Visual check/clean regularly.",
+inspect:"Pressure weekly; tread, cracks and damage monthly.",
+replace:"Replace at tread/wear, damage or age limits.",
+life:"Highly variable; ~20,000–40,000 km is only a broad planning range."
+},
+
+{
+name:"Suspension / Fork",
+location:"Front fork tubes and rear shock absorber",
+purpose:"Controls wheel movement and absorbs road bumps.",
+clean:"Keep fork tubes clean.",
+inspect:"Check for oil leaks, play and unusual noise during service.",
+replace:"Service seals or components when leaking or worn.",
+life:"Depends on roads and use; often tens of thousands of km."
+},
+
+{
+name:"Wheel Bearings",
+location:"Inside front and rear wheel hubs",
+purpose:"Allows the wheels to rotate smoothly.",
+clean:"Avoid directing high-pressure water at bearing seals.",
+inspect:"Check for roughness, play or noise during tyre service.",
+replace:"Replace if rough, noisy, loose or damaged.",
+life:"Often ~30,000–60,000 km, but condition matters more than a fixed number."
+},
+
+{
+name:"Lights & Indicators",
+location:"Front, rear and handlebar/indicator assemblies",
+purpose:"Provides visibility and communicates turns/braking.",
+clean:"Clean lenses monthly.",
+inspect:"Check operation regularly.",
+replace:"Replace bulb or faulty LED assembly when necessary.",
+life:"As required."
+},
+
+{
+name:"Brake / Clutch Levers",
+location:"Handlebar controls",
+purpose:"Operate braking and clutch systems.",
+clean:"Wipe and clean monthly.",
+inspect:"Check smooth movement, free play and damage.",
+replace:"Replace if bent, cracked or damaged.",
+life:"As required."
+}
+
+
+];
+
+
+const brandFilter =
+document.getElementById("brandFilter");
+
+const typeFilter =
+document.getElementById("typeFilter");
+
+
+[...new Set(bikes.map(b=>b[0]))]
+.sort()
+.forEach(brand=>{
+
+    const option =
+    document.createElement("option");
+
+    option.value=brand;
+    option.textContent=brand;
+
+    brandFilter.appendChild(option);
+
+});
+
+
+[...new Set(bikes.map(b=>b[2]))]
+.sort()
+.forEach(type=>{
+
+    const option =
+    document.createElement("option");
+
+    option.value=type;
+    option.textContent=type;
+
+    typeFilter.appendChild(option);
+
+});
+
+
+function renderBikes(){
+
+    const query =
+    document
+    .getElementById("searchInput")
+    .value
+    .toLowerCase()
+    .trim();
+
+    const selectedBrand =
+    brandFilter.value;
+
+    const selectedType =
+    typeFilter.value;
+
+
+    const filtered =
+    bikes.filter(bike=>{
+
+        const brand=bike[0];
+        const name=bike[1];
+        const type=bike[2];
+        const engine=bike[3];
+
+        const matchesSearch =
+            !query ||
+            brand.toLowerCase().includes(query) ||
+            name.toLowerCase().includes(query) ||
+            type.toLowerCase().includes(query) ||
+            engine.toLowerCase().includes(query);
+
+        const matchesBrand =
+            !selectedBrand ||
+            brand===selectedBrand;
+
+        const matchesType =
+            !selectedType ||
+            type===selectedType;
+
+        return (
+            matchesSearch &&
+            matchesBrand &&
+            matchesType
+        );
+
+    });
+
+
+    document
+    .getElementById("resultCount")
+    .textContent =
+    `${filtered.length} bikes available`;
+
+
+    const grid =
+    document.getElementById("bikeGrid");
+
+
+    if(filtered.length===0){
+
+        grid.innerHTML=`
+
+            <div class="empty">
+
+                <h2>Bike not found</h2>
+
+                <p>
+                    Try another bike name,
+                    brand or type.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+    filtered.map(bike=>{
+
+        const index =
+        bikes.indexOf(bike);
+
+        return `
+
+            <div
+                class="bike-card"
+                onclick="openBike(${index})">
+
+                <div class="bike-visual">
+                    🏍️
+                </div>
+
+                <span class="bike-brand">
+                    ${bike[0]}
+                </span>
+
+                <h3>
+                    ${bike[1]}
+                </h3>
+
+                <p>
+                    ${bike[2]} · ${bike[3]}
+                </p>
+
+                <p style="margin-top:7px">
+                    🔧 16 important parts
+                </p>
+
+            </div>
+
+        `;
+
+    }).join("");
+
+}
+
+
+renderBikes();
+
+
+function openBike(index){
+
+    const bike =
+    bikes[index];
+
+
+    document
+    .getElementById("detailTitle")
+    .innerHTML=`
+
+        <h2>
+            ${bike[0]} ${bike[1]}
+        </h2>
+
+        <div class="detail-subtitle">
+            ${bike[2]} · ${bike[3]}
+        </div>
+
+    `;
+
+
+    const partsGrid =
+    document.getElementById("partsGrid");
+
+
+    partsGrid.innerHTML =
+    parts.map((part,index)=>{
+
+        return `
+
+            <article
+                class="part-card"
+                id="part-${index+1}">
+
+                <h3>
+                    ${index+1}.
+                    ${part.name}
+                </h3>
+
+                <div class="part-location">
+                    📍 ${part.location}
+                </div>
+
+                <div class="part-info">
+
+                    <strong>
+                        ⚙️ What it does:
+                    </strong>
+
+                    ${part.purpose}
+
+                </div>
+
+                <div class="part-info">
+
+                    <strong>
+                        🧽 Clean:
+                    </strong>
+
+                    ${part.clean}
+
+                </div>
+
+                <div class="part-info">
+
+                    <strong>
+                        🔎 Inspect:
+                    </strong>
+
+                    ${part.inspect}
+
+                </div>
+
+                <div class="part-info">
+
+                    <strong>
+                        🔧 Replace:
+                    </strong>
+
+                    ${part.replace}
+
+                </div>
+
+                <div class="part-info">
+
+                    <strong>
+                        📏 Typical life:
+                    </strong>
+
+                    ${part.life}
+
+                </div>
+
+            </article>
+
+        `;
+
+    }).join("");
+
+
+    document
+    .getElementById("bikeModal")
+    .classList
+    .remove("hidden");
+
+
+    document.body.style.overflow="hidden";
+
+}
+
+
+function closeBike(){
+
+    document
+    .getElementById("bikeModal")
+    .classList
+    .add("hidden");
+
+    document.body.style.overflow="";
+
+}
+
+
+function closeModalOutside(event){
+
+    if(event.target.id==="bikeModal"){
+        closeBike();
+    }
+
+}
+
+
+function scrollToPart(number){
+
+    const element =
+    document.getElementById(
+        "part-"+number
+    );
+
+    if(!element)return;
+
+
+    element.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+    });
+
+
+    element.style.borderColor="#4da3ff";
+
+
+    setTimeout(()=>{
+
+        element.style.borderColor="";
+
+    },1500);
+
+}
+
+
+function toggleTheme(){
+
+    document
+    .body
+    .classList
+    .toggle("light");
+
+}
+
+
+let tamilMode=false;
+
+
+function toggleLanguage(){
+
+    tamilMode=!tamilMode;
+
+
+    const title =
+    document.getElementById("heroTitle");
+
+    const text =
+    document.getElementById("heroText");
+
+
+    if(tamilMode){
+
+        title.textContent =
+        "உங்கள் Bike-ன் ஒவ்வொரு முக்கியமான Part-ஐ தெரிந்துகொள்ளுங்கள்";
+
+
+        text.innerHTML=`
+
+            உங்கள் bike-ஐ select செய்யுங்கள்.
+
+            அந்த bike-ன் முக்கியமான parts
+            எங்கே இருக்கிறது, அது என்ன வேலை செய்கிறது,
+            எப்போது clean செய்ய வேண்டும்,
+            எப்போது inspect செய்ய வேண்டும்,
+            எப்போது replace செய்ய வேண்டும்,
+            typical-ஆ எத்தனை KM பயன்படுத்தலாம்
+            என்பதை பார்க்கலாம்.
+
+        `;
+
+    }else{
+
+        title.textContent =
+        "Know your bike. Know every important part.";
+
+
+        text.innerHTML=`
+
+            Select your bike to see important parts,
+            where they are located, what they do,
+            when to clean them, when to inspect them,
+            when they may need replacement and
+            their typical service life.
+
+            <br><br>
+
+            உங்கள் bike-ஐ select செய்து
+            ஒவ்வொரு important part பற்றியும்
+            தெரிந்து கொள்ளுங்கள்.
+
+        `;
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
