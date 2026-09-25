@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+    <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#101827"/><stop offset="1" stop-color="#243b53"/></linearGradient></defs>
+    <rect width="900" height="600" fill="url(#g)"/>
+    <circle cx="280" cy="390" r="92" fill="none" stroke="#dbeafe" stroke-width="18"/>
+    <circle cx="650" cy="390" r="92" fill="none" stroke="#dbeafe" stroke-width="18"/>
+    <path d="M280 390 L390 275 L530 390 L650 390 M390 275 L470 270 L535 320 L650 390 M470 270 L425 220" fill="none" stroke="#38bdf8" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M350 310 Q455 250 555 315 L505 350 L400 350 Z" fill="#ef4444"/>
+    <text x="450" y="95" text-anchor="middle" fill="white" font-family="Arial" font-size="38" font-weight="700">Honda CB200X</text>
+    <text x="450" y="145" text-anchor="middle" fill="#cbd5e1" font-family="Arial" font-size="22">Adventure • 184 cc</text>
+    <text x="450" y="540" text-anchor="middle" fill="#94a3b8" font-family="Arial" font-size="18">Bike Care TN • Visual placeholder — replace with licensed model photo</text>
+    </svg>
